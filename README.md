@@ -1,3 +1,73 @@
+
+# Project README
+
+**Teammates:** June & Jolin
+
+---
+
+## 1. Setup and Run Instructions
+
+---
+
+## 2. Problem Statement, Target Users and User Needs
+
+### Problem Statement
+
+### Target Users
+
+### User Needs
+
+---
+
+## 3. Feature List and Page/Navigation Description
+
+### Feature List
+
+### Page/Navigation Description
+
+---
+
+## 4. Component Tree for Each Page
+
+---
+
+## 5. Mock Data Description and Planned Backend Entities
+
+### Mock Data Description
+
+### Planned Backend Entities
+
+---
+
+## 6. Planned CA2 API Endpoints
+
+---
+
+## 7. Who Did What: Each Person's Page, Component or Feature
+
+### May's Contributions
+
+### June's Contributions
+
+### Jolin's Contributions
+
+---
+
+## 8. GitHub Repo Link (Add Your Lecturer as a Collaborator)
+
+---
+
+## 9. Screenshot of GitHub Insights Showing Everyone's Commits
+
+---
+
+## 10. Screenshots of the App
+
+---
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
