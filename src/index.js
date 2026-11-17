@@ -7,13 +7,44 @@ function App() {
   const [currentPage, setCurrentPage] = useState("home");
 
   return (
-    <div>
+    <div>      
+      <NavBar 
+        currentPage={currentPage}
+        onNavigate={setCurrentPage}
+      />
+      
       {currentPage === "home" && <Home onShopNow={() => setCurrentPage("shop")} />}
       {currentPage === "shop" && <Shop />}
       {currentPage === "dashboard" && <Dashboard />}
 
     </div>
   );
+}
+
+const links = [
+  { location: "home", label: "Home" },
+  { location: "shop", label: "Shop" },
+  { location: "dashboard", label: "Dashboard" }
+];
+
+function NavBar({currentPage, onNavigate}) {
+  return (
+    // used "nav" cuz it groups navigation links and buttons
+    <nav>
+      <h2> BakeFlow </h2>
+
+      {links.map((nav_button) => {
+        return (
+          <button 
+          key={nav_button.location}
+          onClick={() => onNavigate(nav_button.location)} 
+          className={currentPage === nav_button.location ? "active" : ""}> 
+            {nav_button.label} 
+          </button>
+        )
+      })}
+    </nav>
+  )
 }
 
 function Home({ onShopNow }) {
@@ -122,6 +153,10 @@ function FeaturedProducts({onShopNow}) {
           </div>
         );
       })} */}
+
+      {filteredProducts.length === 0 && (
+        <p> No featured bakes in this category </p>
+      )}
 
       {filteredProducts.map((bread) => {
         return (
