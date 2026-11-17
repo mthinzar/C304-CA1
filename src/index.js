@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
+import "./index.css"
 
 function App() {
 
@@ -8,7 +9,6 @@ function App() {
   return (
     <div>
       {currentPage === "home" && <Home onShopNow={() => setCurrentPage("shop")} />}
-
       {currentPage === "shop" && <Shop />}
       {currentPage === "dashboard" && <Dashboard />}
 
@@ -21,10 +21,12 @@ function Home({ onShopNow }) {
     <div>
       <h1> Freshly Baked in Singapore </h1>
       <p> Tagline </p>
-      <button onClick={onShopNow}> browse menu </button>
+      <button onClick={onShopNow}> 
+        browse menu 
+      </button>
 
       <BakeryIntro />
-      <FeaturedProducts />
+      <FeaturedProducts onShopNow={onShopNow}/>
     </div>
   )
 }
@@ -54,7 +56,8 @@ function BakeryIntro() {
             <h3> {item.title} </h3>
             <p> {item.text} </p>
           </div>
-        )})}
+        )
+      })}
     </div>
   );
 }
@@ -68,13 +71,17 @@ const products = [
   },
   {
     name: "Croissant",
-    category: "Pastry",
+    category: "Pastries",
     price: 3.5,
     isFeatured: true
   }
 ];
 
-function FeaturedProducts() {
+const categories = ["All", "Cakes", "Cookies", "Pastries"];
+
+function FeaturedProducts({onShopNow}) {
+
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   // .filter() - select matching products , .map() - creates JSX from products
   const featuredProducts = products.filter((bread) => {
@@ -84,20 +91,65 @@ function FeaturedProducts() {
     // return bread.isFeatured === true
   })
 
+  // featured products matching the selected category
+  const filteredProducts = featuredProducts.filter((bread) => {
+    return selectedCategory === "All" || bread.category === selectedCategory;
+  })
+
   return (
     <div>
       <h2> Feature Bakes </h2>
 
-      {featuredProducts.map((bread) => {
+      {/* looping through the array of strings */}
+      {categories.map((group) => {
+        return (
+          <button 
+          key={group} 
+          onClick={() => setSelectedCategory(group)}
+          className={selectedCategory === group ? "active" : ""}
+          >
+            {group}
+          </button>
+        )
+      })}
+
+      {/* looping through the array of objects */}
+      {/* {featuredProducts.map((bread) => {
         return (
           <div key={bread.name}>
             <h3> {bread.name} </h3>
             <p> {bread.price} </p>
           </div>
         );
+      })} */}
+
+      {filteredProducts.map((bread) => {
+        return (
+          // reuse the ProductCard component
+          <ProductCard
+          key= {bread.name}
+          //ProductCard needs the entire object so it can access both name and price
+          dessert={bread} 
+          onShopNow={onShopNow}
+          />
+        )
       })}
+
     </div>
   )
+}
+
+function ProductCard({dessert , onShopNow}) {
+  return (
+    <div>
+    <h3> {dessert.name} </h3>
+    <p> ${dessert.price.toFixed(2)} </p>
+
+    <button onClick={onShopNow}>
+      Order in Shop
+    </button>
+    </div>
+  );
 }
 
 function Shop() {
