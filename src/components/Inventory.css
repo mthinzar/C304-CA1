@@ -41,3 +41,64 @@
   background: #fdecea;
   border-color: #e57373;
 }
+
+.section-title {
+  margin-top: 32px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.inventory-table th,
+.inventory-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: top;
+}
+
+.inventory-table th {
+  background: #f4f6f8;
+  font-weight: 600;
+}
+
+.location-text {
+  font-size: 12px;
+  color: #666;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge.green {
+  background: #e6f4ea;
+  color: #1e7e34;
+}
+
+.badge.orange {
+  background: #fff4e5;
+  color: #b35c00;
+}
+
+.badge.red {
+  background: #fdecea;
+  color: #c62828;
+}
+
+.empty-message {
+  padding: 16px;
+  color: #666;
+}
