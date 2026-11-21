@@ -102,3 +102,7 @@
   padding: 16px;
   color: #666;
 }
+
+.inventory-table td:first-child {
+  white-space: nowrap;
+}
