@@ -13,7 +13,7 @@ const initialFilters = {
   status: "All",
 };
 
-function InventoryOverviewPage({ products, onAddProduct }) {
+function InventoryOverviewPage({ products, currentUser, onAddProduct }) {
   const [filters, setFilters] = useState(initialFilters);
 
   function handleFilterChange(e) {
@@ -24,33 +24,42 @@ function InventoryOverviewPage({ products, onAddProduct }) {
     setFilters(initialFilters);
   }
 
-  // Summary numbers (whole warehouse)
-  const totalProducts = products.length;
+  // Who is viewing?
+  const isAdmin = currentUser === "admin";
+  const currentCompany = companies.find((c) => c.id === currentUser);
 
-  const totalUnits = products.reduce(
+  // Admin sees all products, a customer only sees their own
+  const visibleProducts = isAdmin
+    ? products
+    : products.filter((product) => product.companyId === currentUser);
+
+  // Summary numbers
+  const totalProducts = visibleProducts.length;
+
+  const totalUnits = visibleProducts.reduce(
     (acc, product) => acc + product.quantity,
     0
   );
 
-  const lowStockCount = products.filter(
+  const lowStockCount = visibleProducts.filter(
     (product) => getStockStatus(product) === "Low Stock"
   ).length;
 
-  const outOfStockCount = products.filter(
+  const outOfStockCount = visibleProducts.filter(
     (product) => getStockStatus(product) === "Out of Stock"
   ).length;
 
   // Products that match the filters (for the table)
   const searchText = filters.search.toLowerCase();
 
-  const filteredProducts = products.filter((product) => {
+  const filteredProducts = visibleProducts.filter((product) => {
     const matchesSearch =
       product.name.toLowerCase().includes(searchText) ||
       product.sku.toLowerCase().includes(searchText);
     const matchesCompany =
-      filters.company === "All" || product.companyId === filters.company;
+      !isAdmin || filters.company === "All" || product.companyId === filters.company;
     const matchesWarehouse =
-      filters.warehouse === "All" || product.warehouseId === filters.warehouse;
+      !isAdmin || filters.warehouse === "All" || product.warehouseId === filters.warehouse;
     const matchesStatus =
       filters.status === "All" || getStockStatus(product) === filters.status;
 
@@ -59,7 +68,9 @@ function InventoryOverviewPage({ products, onAddProduct }) {
 
   return (
     <div className="inventory-page">
-      <h1>Inventory Overview</h1>
+      <h1>
+        {isAdmin ? "Inventory Overview" : `My Inventory – ${currentCompany.name}`}
+      </h1>
 
       <div className="summary-row">
         <SummaryCard label="Total Products" value={totalProducts} />
@@ -68,18 +79,19 @@ function InventoryOverviewPage({ products, onAddProduct }) {
         <SummaryCard label="Out of Stock" value={outOfStockCount} color="red" />
       </div>
 
-      <h2 className="section-title">All Products</h2>
+      <h2 className="section-title">{isAdmin ? "All Products" : "My Products"}</h2>
 
       <InventoryFilters
         filters={filters}
         companies={companies}
         warehouses={warehouses}
+        isAdmin={isAdmin}
         onFilterChange={handleFilterChange}
         onClearFilters={handleClearFilters}
       />
 
       <p className="result-count">
-        Showing {filteredProducts.length} of {products.length} products
+        Showing {filteredProducts.length} of {visibleProducts.length} products
       </p>
 
       <InventoryTable
@@ -88,14 +100,18 @@ function InventoryOverviewPage({ products, onAddProduct }) {
         warehouses={warehouses}
       />
 
-      <h2 className="section-title">Add New Product</h2>
-      <AddProductForm
-        products={products}
-        companies={companies}
-        warehouses={warehouses}
-        bookings={bookings}
-        onAddProduct={onAddProduct}
-      />
+      {isAdmin && (
+        <>
+          <h2 className="section-title">Add New Product</h2>
+          <AddProductForm
+            products={products}
+            companies={companies}
+            warehouses={warehouses}
+            bookings={bookings}
+            onAddProduct={onAddProduct}
+          />
+        </>
+      )}
     </div>
   );
 }

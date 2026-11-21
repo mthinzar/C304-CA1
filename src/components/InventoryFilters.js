@@ -1,6 +1,6 @@
 const statusOptions = ["All", "In Stock", "Low Stock", "Out of Stock"];
 
-function InventoryFilters({ filters, companies, warehouses, onFilterChange, onClearFilters }) {
+function InventoryFilters({ filters, companies, warehouses, isAdmin, onFilterChange, onClearFilters }) {
   return (
     <div className="filters">
       <input
@@ -11,23 +11,27 @@ function InventoryFilters({ filters, companies, warehouses, onFilterChange, onCl
         onChange={onFilterChange}
       />
 
-      <select name="company" value={filters.company} onChange={onFilterChange}>
-        <option value="All">All companies</option>
-        {companies.map((company) => (
-          <option key={company.id} value={company.id}>
-            {company.name}
-          </option>
-        ))}
-      </select>
+      {isAdmin && (
+        <>
+          <select name="company" value={filters.company} onChange={onFilterChange}>
+            <option value="All">All companies</option>
+            {companies.map((company) => (
+              <option key={company.id} value={company.id}>
+                {company.name}
+              </option>
+            ))}
+          </select>
 
-      <select name="warehouse" value={filters.warehouse} onChange={onFilterChange}>
-        <option value="All">All warehouses</option>
-        {warehouses.map((warehouse) => (
-          <option key={warehouse.id} value={warehouse.id}>
-            {warehouse.name} ({warehouse.size})
-          </option>
-        ))}
-      </select>
+          <select name="warehouse" value={filters.warehouse} onChange={onFilterChange}>
+            <option value="All">All warehouses</option>
+            {warehouses.map((warehouse) => (
+              <option key={warehouse.id} value={warehouse.id}>
+                {warehouse.name} ({warehouse.size})
+              </option>
+            ))}
+          </select>
+        </>
+      )}
 
       <select name="status" value={filters.status} onChange={onFilterChange}>
         {statusOptions.map((status) => (
