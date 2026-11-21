@@ -1,10 +1,35 @@
-function InventoryOverviewPage({products}) {
-    return(
-        <div>
-            <h1>Inventory Overview</h1>
-            <p>We are storing {products.length} products. </p>
-        </div>
-    );
+import SummaryCard from "./SummaryCard";
+import { getStockStatus } from "../data";
+import "./Inventory.css";
+
+function InventoryOverviewPage({ products }) {
+  const totalProducts = products.length;
+
+  const totalUnits = products.reduce(
+    (acc, product) => acc + product.quantity,
+    0
+  );
+
+  const lowStockCount = products.filter(
+    (product) => getStockStatus(product) === "Low Stock"
+  ).length;
+
+  const outOfStockCount = products.filter(
+    (product) => getStockStatus(product) === "Out of Stock"
+  ).length;
+
+  return (
+    <div className="inventory-page">
+      <h1>Inventory Overview</h1>
+
+      <div className="summary-row">
+        <SummaryCard label="Total Products" value={totalProducts} />
+        <SummaryCard label="Total Units Stored" value={totalUnits} />
+        <SummaryCard label="Low Stock" value={lowStockCount} color="orange" />
+        <SummaryCard label="Out of Stock" value={outOfStockCount} color="red" />
+      </div>
+    </div>
+  );
 }
 
 export default InventoryOverviewPage;
