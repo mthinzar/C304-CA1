@@ -1,9 +1,29 @@
+import { useState } from "react";
 import SummaryCard from "./SummaryCard";
+import InventoryFilters from "./InventoryFilters";
 import InventoryTable from "./InventoryTable";
 import { getStockStatus, companies, warehouses } from "../data";
 import "./Inventory.css";
 
+const initialFilters = {
+  search: "",
+  company: "All",
+  warehouse: "All",
+  status: "All",
+};
+
 function InventoryOverviewPage({ products }) {
+  const [filters, setFilters] = useState(initialFilters);
+
+  function handleFilterChange(e) {
+    setFilters((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }
+
+  function handleClearFilters() {
+    setFilters(initialFilters);
+  }
+
+  // Summary numbers (whole warehouse)
   const totalProducts = products.length;
 
   const totalUnits = products.reduce(
@@ -19,6 +39,23 @@ function InventoryOverviewPage({ products }) {
     (product) => getStockStatus(product) === "Out of Stock"
   ).length;
 
+  // Products that match the filters (for the table)
+  const searchText = filters.search.toLowerCase();
+
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchText) ||
+      product.sku.toLowerCase().includes(searchText);
+    const matchesCompany =
+      filters.company === "All" || product.companyId === filters.company;
+    const matchesWarehouse =
+      filters.warehouse === "All" || product.warehouseId === filters.warehouse;
+    const matchesStatus =
+      filters.status === "All" || getStockStatus(product) === filters.status;
+
+    return matchesSearch && matchesCompany && matchesWarehouse && matchesStatus;
+  });
+
   return (
     <div className="inventory-page">
       <h1>Inventory Overview</h1>
@@ -31,8 +68,21 @@ function InventoryOverviewPage({ products }) {
       </div>
 
       <h2 className="section-title">All Products</h2>
+
+      <InventoryFilters
+        filters={filters}
+        companies={companies}
+        warehouses={warehouses}
+        onFilterChange={handleFilterChange}
+        onClearFilters={handleClearFilters}
+      />
+
+      <p className="result-count">
+        Showing {filteredProducts.length} of {products.length} products
+      </p>
+
       <InventoryTable
-        products={products}
+        products={filteredProducts}
         companies={companies}
         warehouses={warehouses}
       />
