@@ -2,7 +2,8 @@ import { useState } from "react";
 import SummaryCard from "./SummaryCard";
 import InventoryFilters from "./InventoryFilters";
 import InventoryTable from "./InventoryTable";
-import { getStockStatus, companies, warehouses } from "../data";
+import AddProductForm from "./AddProductForm";
+import { getStockStatus, companies, warehouses, bookings } from "../data";
 import "./Inventory.css";
 
 const initialFilters = {
@@ -12,7 +13,7 @@ const initialFilters = {
   status: "All",
 };
 
-function InventoryOverviewPage({ products }) {
+function InventoryOverviewPage({ products, onAddProduct }) {
   const [filters, setFilters] = useState(initialFilters);
 
   function handleFilterChange(e) {
@@ -85,6 +86,15 @@ function InventoryOverviewPage({ products }) {
         products={filteredProducts}
         companies={companies}
         warehouses={warehouses}
+      />
+
+      <h2 className="section-title">Add New Product</h2>
+      <AddProductForm
+        products={products}
+        companies={companies}
+        warehouses={warehouses}
+        bookings={bookings}
+        onAddProduct={onAddProduct}
       />
     </div>
   );
