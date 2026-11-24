@@ -4,11 +4,8 @@ import React from "react";
 function SummaryCard(props) {
   return (
     <div className="summary-card">
-
       <p>{props.title}</p>
-
       <h2>{props.value}</h2>
-
     </div>
   );
 }
@@ -18,35 +15,66 @@ function Dashboard(props) {
   // Calculate total stock
   let totalStock = 0;
 
-  props.products.forEach(product => {
-    totalStock += product.quantity;
-  });
+  for (let i = 0; i < props.products.length; i++) {
+    totalStock = totalStock + props.products[i].quantity;
+  }
 
   // Calculate active deliveries
   let activeDeliveries = 0;
 
-  props.deliveries.forEach(delivery => {
-
-    if (delivery.status !== "Completed") {
+  for (let i = 0; i < props.deliveries.length; i++) {
+    if (props.deliveries[i].status !== "Completed") {
       activeDeliveries++;
     }
+  }
 
-  });
+  // Display title and description based on user role
+  let title;
+  let description;
+
+  if (props.staff === true) {
+    title = "Warehouse Staff Dashboard";
+    description = "Manage your warehouse operations.";
+  } else {
+    title = "Customer Dashboard";
+    description = "Welcome to your warehouse overview.";
+  }
+
+  // Check stock status
+  function getStockStatus(quantity) {
+    if (quantity === 0) {
+      return "Out of Stock";
+    } else if (quantity < 20) {
+      return "Low Stock";
+    } else {
+      return "Available";
+    }
+  }
+
+  // Display stock movement history
+  let stockHistory;
+
+  if (props.history.length === 0) {
+    stockHistory = <p>No stock movements recorded yet.</p>;
+  } else {
+    stockHistory = (
+      <ul className="dashboard-list">
+        {props.history.map(item => (
+          <li key={item.id}>
+            <h3>{item.product}</h3>
+            <p>Movement: {item.type}</p>
+            <p>Quantity: {item.quantity}</p>
+          </li>
+        ))}
+      </ul>
+    );
+  }
 
   return (
     <div className="page">
 
-      <h1>
-        {props.staff
-          ? "Warehouse Staff Dashboard"
-          : "Customer Dashboard"}
-      </h1>
-
-      <p>
-        {props.staff
-          ? "Manage your warehouse operations."
-          : "Welcome to your warehouse overview."}
-      </p>
+      <h1>{title}</h1>
+      <p>{description}</p>
 
       {/* Summary Cards */}
       <div className="summary-container">
@@ -78,89 +106,36 @@ function Dashboard(props) {
 
         <h2>Inventory Overview</h2>
 
-        <table>
+        <ul className="dashboard-list">
 
-          <thead>
-            <tr>
-              <th>Product ID</th>
-              <th>Product Name</th>
-              <th>Quantity</th>
-              <th>Stock Status</th>
-            </tr>
-          </thead>
+          {props.products.map(product => (
 
-          <tbody>
+            <li key={product.id}>
 
-            {props.products.map(product => (
+              <h3>{product.name}</h3>
 
-              <tr key={product.id}>
+              <p>Product ID: {product.id}</p>
 
-                <td>{product.id}</td>
+              <p>Quantity: {product.quantity}</p>
 
-                <td>{product.name}</td>
+              <p>
+                Stock Status: {getStockStatus(product.quantity)}
+              </p>
 
-                <td>{product.quantity}</td>
+            </li>
 
-                <td>
-                  {product.quantity === 0
-                    ? "Out of Stock"
-                    : product.quantity < 20
-                    ? "Low Stock"
-                    : "Available"}
-                </td>
+          ))}
 
-              </tr>
-
-            ))}
-
-          </tbody>
-
-        </table>
+        </ul>
 
       </div>
 
       {/* Recent Stock Movements */}
       <div className="panel">
 
-        <h2>Recent Stock Movements</h2>
+        <h2>Stock Movements</h2>
 
-        {props.history.length === 0 ? (
-
-          <p>No stock movements recorded yet.</p>
-
-        ) : (
-
-          <table>
-
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Movement</th>
-                <th>Quantity</th>
-              </tr>
-            </thead>
-
-            <tbody>
-
-              {props.history.slice(0, 5).map(item => (
-
-                <tr key={item.id}>
-
-                  <td>{item.product}</td>
-
-                  <td>{item.type}</td>
-
-                  <td>{item.quantity}</td>
-
-                </tr>
-
-              ))}
-
-            </tbody>
-
-          </table>
-
-        )}
+        {stockHistory}
 
       </div>
 
