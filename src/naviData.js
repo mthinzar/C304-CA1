@@ -17,5 +17,32 @@ export const intents = [
     title: "Opening Hours",
     desc: "See what time we open and close."
   },
-  
+
+];
+
+export const botResponses = [
+  {
+    keyword: "hello",
+    reply: "Hi! Welcome to SmartStore."
+  },
+  {
+    keyword: "stock",
+    reply: "I can help you check stock availability."
+  },
+  {
+    keyword: "hours",
+    reply: "I can help you check our opening hours."
+  },
+  {
+    keyword: "visit",
+    reply: "I can help you plan your warehouse visit."
+  },
+  {
+    keyword: "location",
+    reply: "Our SmartStore warehouse is located in Woodlands, Singapore."
+  },
+  {
+    keyword: "warehouse",
+    reply: "Our SmartStore warehouse is located in Woodlands, Singapore."
+  }
 ];

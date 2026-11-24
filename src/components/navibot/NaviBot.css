@@ -1,0 +1,19 @@
+.user-message {
+  background-color: #2563eb;
+  color: white;
+  padding: 12px;
+  border-radius: 12px;
+  margin: 8px 0 8px auto;
+  width: fit-content;
+  max-width: 75%;
+}
+
+.bot-message {
+  background-color: #f1f5f9;
+  color: #1e293b;
+  padding: 12px;
+  border-radius: 12px;
+  margin: 8px auto 8px 0;
+  width: fit-content;
+  max-width: 75%;
+}

@@ -3,6 +3,8 @@ import "./App.css";
 import { products, companies } from "./data";
 import ViewAsSelector from "./components/ViewAsSelector";
 import InventoryOverviewPage from "./components/InventoryOverviewPage";
+import NaviBot from "./components/navibot/NaviBot";
+
 
 function App() {
   const [productList, setProductList] = useState(products);
@@ -28,6 +30,8 @@ function App() {
         currentUser={currentUser}
         onAddProduct={handleAddProduct}
       />
+      <h1>SmartStore ViraBot</h1>
+      <NaviBot />
     </div>
   );
 }
