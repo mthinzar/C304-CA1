@@ -70,6 +70,105 @@ function WarehouseLocation() {
       <h3>SmartStore Warehouse</h3>
       <p>Location: Woodlands, Singapore</p>
       <p>Plan your journey before visiting our warehouse.</p>
+
+      <a
+        href="https://www.google.com/maps/dir/?api=1&destination=Woodlands%2C+Singapore"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Get Directions
+      </a>
+    </div>
+  );
+}
+
+function VisitPlanner() {
+  const [customerName, setCustomerName] = useState("");
+  const [visitDate, setVisitDate] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+  const [visitPurpose, setVisitPurpose] = useState("stock");
+  const [visitTime, setVisitTime] = useState("10:00");
+
+  function handleSubmit() {
+    if (customerName === "" || visitDate === "") {
+      setError("Please fill in both fields.");
+      setSubmitted(false);
+    } else {
+      setError("");
+      setSubmitted(true);
+    }
+  }
+
+  return (
+    <div>
+      <h3>Plan Your Warehouse Visit</h3>
+
+      <p>Your Name:</p>
+      <input
+        value={customerName}
+        onChange={(event) => {
+          setCustomerName(event.target.value);
+          setSubmitted(false);
+        }}
+        placeholder="Enter your name"
+      />
+
+      <p>Preferred Visit Date:</p>
+      <input
+        type="date"
+        value={visitDate}
+        onChange={(event) => {
+          setVisitDate(event.target.value);
+          setSubmitted(false);
+        }}
+      />
+
+      <p>Purpose of Visit:</p>
+      <select
+        value={visitPurpose}
+        onChange={(event) => {
+          setVisitPurpose(event.target.value);
+          setSubmitted(false);
+        }}
+      >
+        <option value="stock">Check Stock</option>
+        <option value="pickup">Collect Items</option>
+        <option value="other">General Enquiry</option>
+      </select>
+
+      <p>Preferred Time:</p>
+      <select
+        value={visitTime}
+        onChange={(event) => {
+          setVisitTime(event.target.value);
+          setSubmitted(false);
+        }}
+      >
+        <option value="10:00">10:00 AM</option>
+        <option value="11:00">11:00 AM</option>
+        <option value="14:00">2:00 PM</option>
+        <option value="15:00">3:00 PM</option>
+      </select>
+
+      <button onClick={handleSubmit}>
+        Submit Visit Request
+      </button>
+
+      {error !== "" && <p>{error}</p>}
+
+      {submitted && (
+        <div>
+          <h4>Visit Request Details</h4>
+
+          <p>Name: {customerName}</p>
+          <p>Date: {visitDate}</p>
+          <p>Purpose: {visitPurpose}</p>
+          <p>Time: {visitTime}</p>
+
+          <p>Your visit request details have been entered.</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -105,6 +204,7 @@ function NaviBot() {
         )
       })}
       {selectedOption === "visit" && <WarehouseLocation />}
+      {selectedOption === "visit" && <VisitPlanner />}
       <MessageInput />
     </div>
   )
