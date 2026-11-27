@@ -1,4 +1,4 @@
-import { intents, botResponses } from "../../naviData";
+import { intents, botResponses, openingHours } from "../../naviData";
 import { useState } from "react";
 import "./NaviBot.css";
 
@@ -46,22 +46,42 @@ function MessageInput() {
     }
   }
 
+
   return (
-    <div>
-      <input value={userInput}
-        onChange={(event) => setUserInput(event.target.value)} />
-      {messages.map((message, index) => {
-        return (
-          <ChatMessage
-            key={index}
-            message={message.text}
-            sender={message.sender}
-          />
-        );
-      })}
-      <button onClick={() => handleSend()}> Send </button>
+    <div className="navibot-chat">
+
+      <div className="navibot-chat-header">
+        <h3>NaviBot Chat</h3>
+        <p>SmartStore Assistant</p>
+      </div>
+
+      <div className="navibot-conversation">
+        {messages.map((message, index) => {
+          return (
+            <ChatMessage
+              key={index}
+              message={message.text}
+              sender={message.sender}
+            />
+          );
+        })}
+      </div>
+
+      <div className="navibot-input-row">
+        <input
+          value={userInput}
+          onChange={(event) => setUserInput(event.target.value)}
+          placeholder="Type your message..."
+        />
+
+        <button onClick={() => handleSend()}>
+          Send
+        </button>
+      </div>
+
     </div>
-  )
+  );
+
 }
 
 function WarehouseLocation() {
@@ -206,8 +226,7 @@ function StockInformation() {
 
   function handleCheckStock() {
 
-    // .trim() to remove leading and trailing spaces when checking whether the input is empty
-    if (productName.trim() === "") {
+    if (productName === "") {
       setError("Please enter a product name.");
       setSearchedProduct("");
     } else {
@@ -263,28 +282,80 @@ function NaviBot() {
   }
 
   return (
-    <div>
-      {intents.map((item) => {
-        return (
-          <div key={item.id}>
-            <button onClick={() => handleOptionClick(item.id)}>
-              {item.label}
-            </button>
-          </div>
-        )
-      })}
-      {selectedIntent.map((item) => {
-        return (
-          <div key={item.id}>
-            <ChatMessage message={item.desc} />
-          </div>
-        )
-      })}
-      {selectedOption === "visit" && <WarehouseLocation />}
-      {selectedOption === "visit" && <VisitPlanner />}
-      <MessageInput />
+
+    <div className="navibot-container">
+
+      <div className="navibot-header">
+        <h2>NaviBot</h2>
+        <p>Your SmartStore Warehouse Assistant</p>
+      </div>
+
+      <div className="navibot-welcome">
+        <p>Hello! Welcome to SmartStore.</p>
+        <p>How can I help you today?</p>
+      </div>
+
+      <div>
+        <div className="navibot-options">
+          {intents.map((item) => {
+            return (
+              <button
+                key={item.id}
+                className={
+                  selectedOption === item.id
+                    ? "navibot-option active"
+                    : "navibot-option"
+                }
+                onClick={() => handleOptionClick(item.id)}
+              >
+                <span>{item.label}</span>
+                <span>{item.desc}</span>
+              </button>
+            );
+          })}
+        </div>
+        {selectedIntent.map((item) => {
+          return (
+            <div key={item.id}>
+              <ChatMessage message={item.desc} />
+            </div>
+          )
+        })}
+        {selectedOption === "stock" && <StockInformation />}
+
+        {selectedOption === "visit" && <WarehouseLocation />}
+        {selectedOption === "visit" && <VisitPlanner />}
+
+        {selectedOption === "hours" && <OpeningHours />}
+
+        <MessageInput />
+      </div>
     </div>
-  )
+  );
 }
+
+
+function OpeningHours() {
+  return (
+    <div>
+      <h3>SmartStore Opening Hours</h3>
+
+      <p>Here are our warehouse operating hours:</p>
+
+      {openingHours.map((item, index) => {
+        return (
+          <div key={index}>
+            <p>
+              <strong>{item.day}</strong>: {item.time}
+            </p>
+          </div>
+        );
+      })}
+
+      <p>Please check our hours before planning your visit.</p>
+    </div>
+  );
+}
+
 
 export default NaviBot;

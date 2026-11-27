@@ -46,3 +46,18 @@ export const botResponses = [
     reply: "Our SmartStore warehouse is located in Woodlands, Singapore."
   }
 ];
+
+export const openingHours = [
+  {
+    day: "Monday - Friday",
+    time: "9:00 AM - 6:00 PM"
+  },
+  {
+    day: "Saturday",
+    time: "10:00 AM - 4:00 PM"
+  },
+  {
+    day: "Sunday",
+    time: "Closed"
+  }
+];
