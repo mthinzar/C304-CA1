@@ -100,6 +100,15 @@ function VisitPlanner() {
     }
   }
 
+  function handleReset() {
+    setCustomerName("");
+    setVisitDate("");
+    setVisitPurpose("stock");
+    setVisitTime("10:00");
+    setSubmitted(false);
+    setError("");
+  }
+
   return (
     <div>
       <h3>Plan Your Warehouse Visit</h3>
@@ -155,6 +164,10 @@ function VisitPlanner() {
         Submit Visit Request
       </button>
 
+      <button onClick={handleReset}>
+        Reset Form
+      </button>
+
       {error !== "" && <p>{error}</p>}
 
       {submitted && (
@@ -163,15 +176,79 @@ function VisitPlanner() {
 
           <p>Name: {customerName}</p>
           <p>Date: {visitDate}</p>
-          <p>Purpose: {visitPurpose}</p>
+
+          <p>
+            Purpose: {
+              visitPurpose === "stock"
+                ? "Check Stock"
+                : visitPurpose === "pickup"
+                  ? "Collect Items"
+                  : "General Enquiry"
+            }
+          </p>
+
           <p>Time: {visitTime}</p>
 
           <p>Your visit request details have been entered.</p>
+          <p>This is not a confirmed booking.</p>
         </div>
       )}
     </div>
   );
 }
+
+
+function StockInformation() {
+
+  const [productName, setProductName] = useState("");
+  const [searchedProduct, setSearchedProduct] = useState("");
+  const [error, setError] = useState("");
+
+  function handleCheckStock() {
+
+    // .trim() to remove leading and trailing spaces when checking whether the input is empty
+    if (productName.trim() === "") {
+      setError("Please enter a product name.");
+      setSearchedProduct("");
+    } else {
+      setSearchedProduct(productName);
+      setError("");
+    }
+  }
+
+  return (
+    <div>
+      <h3>Check Stock Availability</h3>
+
+      <p>Enter the product you want to check.</p>
+
+      <input
+        value={productName}
+        onChange={(event) => {
+          setProductName(event.target.value);
+          setSearchedProduct("");
+          setError("");
+        }}
+        placeholder="Enter product name"
+      />
+
+      <button onClick={handleCheckStock}>
+        Check Stock
+      </button>
+
+      {error !== "" && <p>{error}</p>}
+
+      {searchedProduct !== "" && (
+        <div>
+          <h4>Stock Enquiry</h4>
+          <p>Product: {searchedProduct}</p>
+          <p>Live stock information is not available yet.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 function NaviBot() {
 
