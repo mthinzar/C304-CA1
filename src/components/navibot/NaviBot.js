@@ -1,4 +1,4 @@
-import { intents, botResponses, openingHours } from "../../naviData";
+import { intents, botResponses, openingHours, suggestedQuestions } from "../../naviData";
 import { useState } from "react";
 import "./NaviBot.css";
 
@@ -10,6 +10,7 @@ function ChatMessage({ message, sender }) {
   );
 }
 
+
 function MessageInput() {
 
   // stores what the customer is currently typing
@@ -20,30 +21,37 @@ function MessageInput() {
 
   const [showChat, setShowChat] = useState(true);
 
-  function handleSend() {
+  function handleSend(question) {
 
-    if (userInput !== "") {
+    const customerQuestion = typeof question === "string"
+      ? question
+      : userInput;
 
-      const lowerInput = userInput.toLowerCase();
+    if (customerQuestion !== "") {
+
+      const lowerInput = customerQuestion.toLowerCase();
 
       const matchedResponse = botResponses.filter(
         (item) => lowerInput.includes(item.keyword)
       );
 
       if (matchedResponse.length > 0) {
-        setMessages([...messages,
-        { sender: "user", text: userInput },
-        { sender: "bot", text: matchedResponse[0].reply }
+        setMessages([
+          ...messages,
+          { sender: "user", text: customerQuestion },
+          { sender: "bot", text: matchedResponse[0].reply }
         ]);
       } else {
-        setMessages([...messages,
-        { sender: "user", text: userInput },
-        {
-          sender: "bot",
-          text: "Sorry, I don't understand your question."
-        }
+        setMessages([
+          ...messages,
+          { sender: "user", text: customerQuestion },
+          {
+            sender: "bot",
+            text: "Sorry, I don't understand your question."
+          }
         ]);
       }
+
       setUserInput("");
     }
   }
@@ -57,16 +65,20 @@ function MessageInput() {
     <div className="navibot-chat">
 
       <div className="navibot-chat-header">
-        <h3>NaviBot Chat</h3>
-        <p>SmartStore Assistant</p>
+        <div>
+          <h3>NaviBot Chat</h3>
+          <p>SmartStore Assistant</p>
+        </div>
 
-        <button onClick={handleClearChat}>
-          Clear Chat
-        </button>
+        <div>
+          <button onClick={handleClearChat}>
+            Clear Chat
+          </button>
 
-        <button onClick={() => setShowChat(!showChat)}>
-          {showChat ? "Hide Chat" : "Show Chat"}
-        </button>
+          <button onClick={() => setShowChat(!showChat)}>
+            {showChat ? "Hide Chat" : "Show Chat"}
+          </button>
+        </div>
       </div>
 
 
@@ -87,6 +99,21 @@ function MessageInput() {
                 );
               })
             )}
+          </div>
+
+          <div className="navibot-suggestions">
+            <h4>Suggested Questions</h4>
+
+            {suggestedQuestions.map((question, index) => {
+              return (
+                <button
+                  key={index}
+                  onClick={() => handleSend(question)}
+                >
+                  {question}
+                </button>
+              );
+            })}
           </div>
 
           <div className="navibot-input-row">
@@ -114,11 +141,22 @@ function MessageInput() {
 
 }
 
+
 function WarehouseLocation() {
+
+  const [showLocation, setShowLocation] = useState(false);
+
+  function handleShowLocation() {
+    setShowLocation(!showLocation);
+  }
+
   return (
-    <div>
+    <div className="navibot-location">
+
       <h3>SmartStore Warehouse</h3>
+
       <p>Location: Woodlands, Singapore</p>
+
       <p>Plan your journey before visiting our warehouse.</p>
 
       <a
@@ -128,6 +166,20 @@ function WarehouseLocation() {
       >
         Get Directions
       </a>
+
+      <button onClick={handleShowLocation}>
+        {showLocation ? "Hide Location Details" : "Show Location Details"}
+      </button>
+
+      {showLocation && (
+        <div className="navibot-location-details">
+          <h4>Before Your Visit</h4>
+          <p>Check our opening hours before travelling.</p>
+          <p>Use Google Maps to plan your journey.</p>
+          <p>Contact the warehouse for its exact address before visiting.</p>
+        </div>
+      )}
+
     </div>
   );
 }
@@ -160,7 +212,7 @@ function VisitPlanner() {
   }
 
   return (
-    <div>
+    <div className="navibot-panel navibot-visit-form">
       <h3>Plan Your Warehouse Visit</h3>
 
       <p>Your Name:</p>
@@ -265,25 +317,39 @@ function StockInformation() {
     }
   }
 
+  function handleResetStock() {
+    setProductName("");
+    setSearchedProduct("");
+    setError("");
+  }
+
   return (
     <div>
       <h3>Check Stock Availability</h3>
 
       <p>Enter the product you want to check.</p>
 
-      <input
-        value={productName}
-        onChange={(event) => {
-          setProductName(event.target.value);
-          setSearchedProduct("");
-          setError("");
-        }}
-        placeholder="Enter product name"
-      />
+      <div className="navibot-stock-form">
+        <input
+          value={productName}
+          onChange={(event) => {
+            setProductName(event.target.value);
+            setSearchedProduct("");
+            setError("");
+          }}
+          placeholder="Enter product name"
+        />
 
-      <button onClick={handleCheckStock}>
-        Check Stock
-      </button>
+        <div className="navibot-stock-buttons">
+          <button onClick={handleCheckStock}>
+            Check Stock
+          </button>
+
+          <button onClick={handleResetStock}>
+            Reset Search
+          </button>
+        </div>
+      </div>
 
       {error !== "" && <p>{error}</p>}
 
@@ -364,7 +430,7 @@ function NaviBot() {
 
         {selectedOption !== "" && (
           <button className="navibot-back-button" onClick={handleBack}>
-            Back to Main Menu
+             Back to Main Menu
           </button>
         )}
 
