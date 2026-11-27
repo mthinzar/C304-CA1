@@ -18,6 +18,8 @@ function MessageInput() {
   //store multiple messages
   const [messages, setMessages] = useState([]);
 
+  const [showChat, setShowChat] = useState(true);
+
   function handleSend() {
 
     if (userInput !== "") {
@@ -46,6 +48,10 @@ function MessageInput() {
     }
   }
 
+  function handleClearChat() {
+    setMessages([]);
+    setUserInput("");
+  }
 
   return (
     <div className="navibot-chat">
@@ -53,31 +59,55 @@ function MessageInput() {
       <div className="navibot-chat-header">
         <h3>NaviBot Chat</h3>
         <p>SmartStore Assistant</p>
-      </div>
 
-      <div className="navibot-conversation">
-        {messages.map((message, index) => {
-          return (
-            <ChatMessage
-              key={index}
-              message={message.text}
-              sender={message.sender}
-            />
-          );
-        })}
-      </div>
+        <button onClick={handleClearChat}>
+          Clear Chat
+        </button>
 
-      <div className="navibot-input-row">
-        <input
-          value={userInput}
-          onChange={(event) => setUserInput(event.target.value)}
-          placeholder="Type your message..."
-        />
-
-        <button onClick={() => handleSend()}>
-          Send
+        <button onClick={() => setShowChat(!showChat)}>
+          {showChat ? "Hide Chat" : "Show Chat"}
         </button>
       </div>
+
+
+      {showChat && (
+        <div>
+
+          <div className="navibot-conversation">
+            {messages.length === 0 ? (
+              <p>Start a conversation with NaviBot!</p>
+            ) : (
+              messages.map((message, index) => {
+                return (
+                  <ChatMessage
+                    key={index}
+                    message={message.text}
+                    sender={message.sender}
+                  />
+                );
+              })
+            )}
+          </div>
+
+          <div className="navibot-input-row">
+            <input
+              value={userInput}
+              onChange={(event) => setUserInput(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  handleSend();
+                }
+              }}
+              placeholder="Type your message..."
+            />
+
+            <button onClick={() => handleSend()}>
+              Send
+            </button>
+          </div>
+
+        </div>
+      )}
 
     </div>
   );
@@ -281,6 +311,10 @@ function NaviBot() {
     setSelectedOption(id);
   }
 
+  function handleBack() {
+    setSelectedOption("");
+  }
+
   return (
 
     <div className="navibot-container">
@@ -327,6 +361,12 @@ function NaviBot() {
         {selectedOption === "visit" && <VisitPlanner />}
 
         {selectedOption === "hours" && <OpeningHours />}
+
+        {selectedOption !== "" && (
+          <button className="navibot-back-button" onClick={handleBack}>
+            Back to Main Menu
+          </button>
+        )}
 
         <MessageInput />
       </div>

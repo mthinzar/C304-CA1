@@ -171,3 +171,31 @@
   border-radius: 8px;
   cursor: pointer;
 }
+
+.navibot-chat-header button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: white;
+  color: #2563eb;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.navibot-chat-header button:hover {
+  background-color: #dbeafe;
+}
+
+.navibot-back-button {
+  margin-top: 15px;
+  padding: 10px 16px;
+  background-color: white;
+  color: #2563eb;
+  border: 1px solid #2563eb;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.navibot-back-button:hover {
+  background-color: #eff6ff;
+}

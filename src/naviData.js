@@ -61,3 +61,4 @@ export const openingHours = [
     time: "Closed"
   }
 ];
+
